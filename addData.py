@@ -19,13 +19,13 @@ def create_tables(conn):
     cur = conn.cursor()
 
     # DELETE LATER: USED FOR DEBUGGING
-    # cur.executescript("""
-    # DROP TABLE IF EXISTS Year;
-    # DROP TABLE IF EXISTS Date;
-    # DROP TABLE IF EXISTS Sample;
-    # DROP TABLE IF EXISTS Macroinvertebrate;
-    # DROP TABLE IF EXISTS Taxonomy;
-    # """)
+    cur.executescript("""
+    DROP TABLE IF EXISTS Year;
+    DROP TABLE IF EXISTS Date;
+    DROP TABLE IF EXISTS Sample;
+    DROP TABLE IF EXISTS Macroinvertebrate;
+    DROP TABLE IF EXISTS Taxonomy;
+    """)
 
     cur.executescript("""
 
@@ -61,7 +61,7 @@ def create_tables(conn):
         date VARCHAR(5), 
         year INT,
         startTime TEXT, 
-        sampleMethod TEXT,
+        sampleMethod TEXT DEFAULT 'quadrat',
         quadrat REAL,
         location TEXT CHECK(location=='Upstream' OR location =='Downstream'),
         microhabitat TEXT CHECK(microhabitat == 'DSR' OR microhabitat == 'DSP' OR microhabitat == 'DFR' OR microhabitat == 'DM' OR microhabitat ==  'DSH' OR microhabitat == 'USR' OR microhabitat == 'UFR' OR microhabitat == 'UM' OR  microhabitat == 'USH' OR microhabitat == 'USU' OR microhabitat == NULL),
@@ -286,12 +286,12 @@ def add_data(conn, cur):
     except:
         print('Issue inserting into Sample table.')
 
-    try:
-        cur.executemany(
-                'INSERT INTO "Date" ("date","year","monthlyAveragePrecipitation","maxDischarge","medianDischarge","discharge", "gageHeight","aggregatedDegreeDays","maxTurb","medianTurb","maxWaterTemp", "medWaterTemp","season") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', date_subtable.values.tolist()
-        )
-    except:
-        print('Issue inserting into Date table.')
+    # try:
+    #     cur.executemany(
+    #             'INSERT INTO "Date" ("date","year","monthlyAveragePrecipitation","maxDischarge","medianDischarge","discharge", "gageHeight","aggregatedDegreeDays","maxTurb","medianTurb","maxWaterTemp", "medWaterTemp","season") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', date_subtable.values.tolist()
+    #     )
+    # except:
+    #     print('Issue inserting into Date table.')
 
     try:
         cur.executemany(
@@ -299,6 +299,7 @@ def add_data(conn, cur):
         )
     except:
          print('Issue inserting into Year table.')
+
     print('Committing changes to database.')
 
     conn.commit()
@@ -306,17 +307,15 @@ def add_data(conn, cur):
 """
 DELETE ADD TO DATE LATER: USED FOR DEBUGGING
 """
-# def add_to_date(conn, cur):
-#     date_subtable = pd.read_csv("date_subtable.csv")
-#     date_subtable = pd.DataFrame(date_subtable)
-#     date_subtable = date_subtable.drop('Unnamed: 0', axis=1)
-#     # print(date_subtable.columns)
-#     cur.executemany(
-#             'INSERT INTO "Date" ("date","year","monthlyAveragePrecipitation","maxDischarge","medianDischarge","discharge", "gageHeight","aggregatedDegreeDays","maxTurb","medianTurb","maxWaterTemp", "medWaterTemp","season") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', date_subtable.values.tolist()
-#     )
-#     conn.commit()
-
-
+def add_to_date(conn, cur):
+    date_subtable = pd.read_csv("date_subtable.csv")
+    date_subtable = pd.DataFrame(date_subtable)
+    date_subtable = date_subtable.drop('Unnamed: 0', axis=1)
+    # print(date_subtable.columns)
+    cur.executemany(
+            'INSERT INTO "Date" ("date","year","monthlyAveragePrecipitation","maxDischarge","medianDischarge","discharge", "gageHeight","aggregatedDegreeDays","maxTurb","medianTurb","maxWaterTemp", "medWaterTemp","season") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', date_subtable.values.tolist()
+    )
+    conn.commit()
 
 
 def run_sql(sql: str):
@@ -338,7 +337,7 @@ def main():
     # add_data(conn, cur)
 
     ## DELETE LATER: USED FOR DEBUGGING
-    # add_to_date(conn, cur) 
+    add_to_date(conn, cur) 
 
     # run_sql('SELECT * FROM DATE LIMIT 20')
     conn.commit()
