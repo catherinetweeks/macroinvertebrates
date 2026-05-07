@@ -22,8 +22,10 @@ def get_discharge(date):
         'datetime' : date
     }
     response = get_usgs_data(url,params=params)
+
     value = response['features'][0]['properties']['value']
     return value
+
 '''
 results in ft
 '''
