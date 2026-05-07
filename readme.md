@@ -154,3 +154,13 @@ To update .csv files, drag new .csv files with the same formatting and titles in
 
 
 For more information on the methods, please refer to [Marney’s original documentation](https://github.com/marneypratt/macroS26/blob/main/data/env_metadata.txt).
+
+
+## Demo
+[Here is a link to our demo]().
+
+## Reflection
+
+Our project processes macroinvertebrate and environmental data collected by Professor Marney Pratt. It uses Python to query and collect data from USGS and NOAA to facilitate the addition of environmental data to the database. It additionally uses a SQLite schema to store, organie, and verify the data. We additionally used Datasette to present the data and facilitate the downloading of CSVs for Biology and Statistics students. 
+
+A key challenge for us was creating a schema that not only represented the existing data, but that will be able to represent future data collection methods and seasons. This required us to be very careful and intentional about the data and the stakeholders' future plans and goals. Another challenge was implementing APIs that fetch data from other sources to add to the data collected by Marney Pratt and students. By using requests, we overcame this challenge and are able to pull data from USGS and NOAA.
